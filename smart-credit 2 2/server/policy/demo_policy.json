@@ -1,0 +1,386 @@
+{
+  "policy_id": "SMART-CREDIT-DEMO",
+  "policy_version": "2026.10-demo.3",
+  "disclaimer": "Fictional demonstration policy for the HLBVN Business Challenge 2026 prototype. None of these values is an HLBVN lending policy, credit threshold, interest rate or fee. Each value is tagged DOCUMENTED (taken from the supplied dataset definitions), DEMO_ASSUMPTION (chosen by the team so the prototype can run) or UNRESOLVED (not defined yet; the related check is reported, not enforced).",
+  "case_ranges": {
+    "requested_loan_vnd": {
+      "min": 1600000,
+      "max": 90100000,
+      "source": "DOCUMENTED",
+      "note": "Observed range of requested_loan_vnd in the supplied dataset."
+    },
+    "loan_tenure_months": {
+      "allowed": [
+        3,
+        6,
+        9,
+        12,
+        18,
+        24
+      ],
+      "source": "DOCUMENTED",
+      "note": "Supported demo tenures given in the brief."
+    },
+    "unified_credit_score": {
+      "min": 350,
+      "max": 850,
+      "source": "DOCUMENTED",
+      "note": "Scale given in the data definition. Used only for validation, never as an approval cut-off."
+    },
+    "on_time_bill_ratio": {
+      "min": 0.0,
+      "max": 1.0,
+      "source": "DOCUMENTED"
+    },
+    "binary_fields": {
+      "fields": [
+        "has_formal_cic_history",
+        "has_observable_tx",
+        "regular_weekly_pattern",
+        "rapid_drain_flag",
+        "internal_delinquency_flag"
+      ],
+      "allowed": [
+        0,
+        1
+      ],
+      "source": "DOCUMENTED"
+    },
+    "non_negative_fields": {
+      "fields": [
+        "monthly_inflow_vnd",
+        "casa_balance_vnd",
+        "inflow_cv",
+        "dti_ratio",
+        "e_wallet_topups_pm"
+      ],
+      "source": "DOCUMENTED",
+      "note": "Definitions describe amounts, counts and ratios; only non-negativity is enforced."
+    },
+    "inflow_cv_upper_bound": {
+      "value": null,
+      "source": "UNRESOLVED",
+      "note": "No documented upper bound for the coefficient of variation."
+    },
+    "dti_ratio_upper_bound": {
+      "value": null,
+      "source": "UNRESOLVED",
+      "note": "No documented valid upper bound. NOT an approval threshold."
+    },
+    "customer_profiles": {
+      "allowed": [
+        "Salaried, with credit history",
+        "Salaried, no credit history",
+        "Gig / platform workers",
+        "First-time borrowers, digitally active",
+        "Online merchants (MSME)"
+      ],
+      "source": "DOCUMENTED"
+    }
+  },
+  "mandatory_fields": {
+    "application": [
+      "application_id",
+      "applicant_id",
+      "qr_ref",
+      "merchant_id",
+      "requested_loan_vnd",
+      "loan_tenure_months"
+    ],
+    "applicant": [
+      "customer_profile",
+      "has_formal_cic_history",
+      "has_observable_tx"
+    ],
+    "source": "DEMO_ASSUMPTION"
+  },
+  "excluded_downstream_fields": {
+    "fields": [
+      "approved_loan_vnd",
+      "interest_rate_pct",
+      "is_default_90d",
+      "manual_approval_status",
+      "manual_decision_days",
+      "manual_review_cost_vnd",
+      "is_abandoned",
+      "stp_approval_status",
+      "stp_decision_minutes",
+      "stp_review_cost_vnd"
+    ],
+    "note": "Outcome / post-decision fields. Never used as pre-assessment inputs."
+  },
+  "data_sources": {
+    "hlb_transactions": {
+      "label": "HLB account & transaction history (simulated)",
+      "consent_category": "hlb_transactions",
+      "fields": [
+        "has_observable_tx",
+        "monthly_inflow_vnd",
+        "inflow_cv",
+        "casa_balance_vnd",
+        "regular_weekly_pattern",
+        "rapid_drain_flag",
+        "on_time_bill_ratio"
+      ]
+    },
+    "credit_information": {
+      "label": "Credit information (simulated CIC-style record)",
+      "consent_category": "credit_information",
+      "fields": [
+        "has_formal_cic_history",
+        "unified_credit_score",
+        "dti_ratio"
+      ]
+    },
+    "e_wallet_activity": {
+      "label": "E-wallet activity (simulated THIRD-PARTY partner data)",
+      "consent_category": "e_wallet_activity",
+      "fields": [
+        "e_wallet_topups_pm"
+      ]
+    },
+    "supporting_documents": {
+      "label": "Documents provided by the customer (simulated)",
+      "consent_category": "supporting_documents",
+      "fields": []
+    }
+  },
+  "transaction_dependent_fields": {
+    "fields": [
+      "monthly_inflow_vnd",
+      "inflow_cv",
+      "casa_balance_vnd",
+      "regular_weekly_pattern",
+      "on_time_bill_ratio",
+      "e_wallet_topups_pm"
+    ],
+    "note": "Fields that should be empty when has_observable_tx = 0. Populated values trigger VERIFY_DATA (1,943 dataset rows)."
+  },
+  "freshness": {
+    "max_age_days": {
+      "value": 90,
+      "source": "DEMO_ASSUMPTION",
+      "note": "Aligned with the 90-day CASA averaging window in the data definition. Not an HLBVN rule."
+    },
+    "require_observation_period": {
+      "value": true,
+      "source": "DEMO_ASSUMPTION"
+    }
+  },
+  "consistency_rules": {
+    "profile_requires_cic": {
+      "Salaried, with credit history": 1,
+      "Salaried, no credit history": 0,
+      "First-time borrowers, digitally active": 0
+    },
+    "source": "DOCUMENTED",
+    "note": "Derived from profile labels; matches the dataset cross-tab (no exceptions in 10,000 rows)."
+  },
+  "consent": {
+    "required_categories": [
+      "hlb_transactions",
+      "credit_information"
+    ],
+    "internal_categories": [
+      "hlb_transactions",
+      "credit_information"
+    ],
+    "third_party_categories": [
+      "e_wallet_activity"
+    ],
+    "optional_categories": [
+      "e_wallet_activity",
+      "supporting_documents"
+    ],
+    "source": "DEMO_ASSUMPTION",
+    "note": "Internal categories are covered by the T&C/Privacy acceptance. Third-party data needs a separate, contextual consent requested only when evidence is insufficient."
+  },
+  "evidence_requirement": {
+    "source": "DEMO_ASSUMPTION",
+    "description": "At least ONE verified repayment-capacity evidence path must be available. This defines evidence types, not a minimum count of alternative-data signals.",
+    "any_of": [
+      {
+        "id": "EV-TX",
+        "label": "Verified HLB transaction history covering at least the configured observation period",
+        "source": "hlb_transactions",
+        "requires_field": {
+          "has_observable_tx": 1
+        },
+        "min_period_months": 6
+      },
+      {
+        "id": "EV-CIC",
+        "label": "Verified formal credit history",
+        "source": "credit_information",
+        "requires_field": {
+          "has_formal_cic_history": 1
+        }
+      },
+      {
+        "id": "EV-3P",
+        "label": "Verified third-party e-wallet activity (customer consented) covering the observation period",
+        "source": "e_wallet_activity",
+        "requires_field_present": "e_wallet_topups_pm",
+        "min_period_months": 6
+      },
+      {
+        "id": "EV-DOC",
+        "label": "Supporting income document verified by a credit officer",
+        "source": "supporting_documents"
+      }
+    ],
+    "min_period_months_source": "DEMO_ASSUMPTION"
+  },
+  "review_rules": [
+    {
+      "rule_id": "R-REV-01",
+      "field": "rapid_drain_flag",
+      "op": "eq",
+      "value": 1,
+      "source": "DOCUMENTED",
+      "message": "Rapid fund withdrawal after top-up detected (rapid_drain_flag = 1). Supporting documents + human review; never an automatic decline.",
+      "customer_message": "Some recent account activity needs to be verified."
+    },
+    {
+      "rule_id": "RF-01",
+      "field": "internal_delinquency_flag",
+      "op": "eq",
+      "value": 1,
+      "source": "APP_STATE",
+      "message": "Internal (simulated) missed-instalment flag from an earlier Smart Credit loan. Not a CIC record.",
+      "customer_message": "A missed instalment on an earlier Smart Credit loan needs to be checked."
+    },
+    {
+      "rule_id": "RF-02",
+      "field": "unified_credit_score",
+      "op": "lt",
+      "value": 436,
+      "source": "DATASET_PERCENTILE",
+      "message": "Unified credit score below 436 (dataset 10th percentile, demo cut-off for document verification only).",
+      "customer_message": "Your credit profile needs some extra verification."
+    },
+    {
+      "rule_id": "RF-03",
+      "field": "on_time_bill_ratio",
+      "op": "lt",
+      "value": 0.663,
+      "source": "DATASET_PERCENTILE",
+      "message": "On-time bill ratio below 0.663 (dataset 10th percentile, demo cut-off for document verification only).",
+      "customer_message": "Your recent bill-payment record needs some extra verification."
+    },
+    {
+      "rule_id": "RF-04",
+      "field": "dti_ratio",
+      "op": "gt",
+      "value": 0.3695,
+      "source": "DATASET_PERCENTILE",
+      "message": "Debt-to-income above 0.3695 (dataset 90th percentile, demo cut-off for document verification only).",
+      "customer_message": "Your existing commitments need some extra verification."
+    }
+  ],
+  "hard_stop_rules": [
+    {
+      "rule_id": "HS-01",
+      "label": "Required consent not given or withdrawn",
+      "source": "DEMO_ASSUMPTION"
+    },
+    {
+      "rule_id": "HS-02",
+      "label": "Merchant category not eligible for Pay Later in this demo (cash-equivalent / top-up merchants)",
+      "source": "DEMO_ASSUMPTION"
+    }
+  ],
+  "approval_conditions": {
+    "source": "DEMO_ASSUMPTION",
+    "note": "Conditions for automatic (STP) approval in the demo. No credit-score, income, DTI or CASA cut-off is used. A case that fails a condition is routed to a credit officer, never auto-declined.",
+    "conditions": [
+      {
+        "id": "AC-01",
+        "label": "Data readiness is DATA_READY"
+      },
+      {
+        "id": "AC-02",
+        "label": "No mandatory-review rule triggered"
+      },
+      {
+        "id": "AC-03",
+        "label": "Requested amount is within the customer's available credit (fictional limit minus outstanding Smart Credit balance)"
+      },
+      {
+        "id": "AC-04",
+        "label": "Selected tenure is offered for the demo Pay Later product"
+      }
+    ]
+  },
+  "repayment_terms": {
+    "source": "DEMO_ASSUMPTION",
+    "label": "Illustrative fictional demo terms - not an HLBVN product, rate or fee",
+    "annual_interest_rate_pct": 12,
+    "upfront_fee_vnd": 0,
+    "late_fee_note": "Illustrative demo assumption: VND 50,000 per overdue instalment. Not an HLBVN fee or legal recommendation.",
+    "offered_tenures": [
+      3,
+      6,
+      9,
+      12,
+      18,
+      24
+    ],
+    "default_tenure": 6,
+    "first_due_after_months": 1,
+    "rounding_vnd": 1000
+  },
+  "payment_simulation": {
+    "processing_delay_ms": 1200,
+    "max_retries": 2,
+    "source": "DEMO_ASSUMPTION"
+  },
+  "terms_and_conditions": {
+    "version": "TC-2026.10-demo",
+    "source": "DEMO_ASSUMPTION",
+    "note": "One mandatory checkbox after QR scan covering the general T&C, Privacy Policy and personal-data handling. It is the basis for using INTERNAL (simulated) bank data; no separate internal-data consent is asked.",
+    "internal_data_categories": [
+      "hlb_transactions",
+      "credit_information"
+    ]
+  },
+  "review_rules_note": "Each flag routes the case to supporting-document verification and then a credit officer. Percentile cut-offs describe the dataset distribution; they are NOT validated risk thresholds (the default label is unusable) and are never used to decline.",
+  "documents": {
+    "source": "DEMO_ASSUMPTION",
+    "note": "Simulated upload: only file name, type and size are recorded; file content is never transmitted or stored.",
+    "types": {
+      "payslip": "Recent payslip / proof of income",
+      "employment": "Employment confirmation or contract",
+      "bank_statement": "Bank statement (last 3 months)",
+      "additional_income": "Proof of additional income / other financial evidence"
+    },
+    "default_request_for_risk_flags": [
+      "payslip",
+      "bank_statement"
+    ],
+    "default_request_for_evidence": [
+      "payslip"
+    ],
+    "max_file_mb": 10
+  },
+  "checkout": {
+    "timeout_seconds": 300,
+    "source": "DEMO_ASSUMPTION",
+    "note": "Applies to customer-side steps only (T&C, method, assessment, terms, payment retry). Paused while a credit officer reviews or while documents are being gathered."
+  },
+  "loan_servicing": {
+    "source": "DEMO_ASSUMPTION",
+    "reminder_days_before_due": 3,
+    "late_fee_vnd": 50000,
+    "late_fee_note": "Illustrative demo assumption: VND 50,000 per overdue instalment. Not an HLBVN fee or legal recommendation.",
+    "missed_payment_creates_internal_flag": true,
+    "cic_reporting": "None - the prototype never reports to or updates the real CIC.",
+    "default_after_days_overdue": 90,
+    "default_status_note": "After an unpaid instalment is more than 90 days overdue, mark the loan DEFAULT in this demo only. This is not a CIC report or real-world bad-debt classification."
+  },
+  "credit_limit": {
+    "source": "DEMO_ASSUMPTION",
+    "max_limit_vnd": 90100000,
+    "note": "Available credit = fictional indicative limit - outstanding Smart Credit principal. Limit changes only after an officer approval."
+  }
+}

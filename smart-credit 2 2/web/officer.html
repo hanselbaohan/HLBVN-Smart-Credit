@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Credit Officer Workbench</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="/img/hlb-app-icon.png">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body class="ow">
+  <header class="ow-top">
+    <span class="brand-row"><img class="hlb-mark" src="/img/hlb-app-icon.png" alt="HLB" style="width:30px;height:30px"><span class="logo">HLB<span class="connect">CONNECT</span></span></span>
+    <span class="title">Smart Credit · Credit Officer Workbench</span>
+    <span class="chip amber">Demo only</span>
+    <span class="spacer"></span>
+    <label>Officer <input id="officer" value="officer.nguyen" aria-label="Officer name"></label>
+    <label>Access code <input id="code" placeholder="DEMO-OFFICER-2026" aria-label="Demo access code"></label>
+    <button class="btn ghost" style="width:auto;padding:7px 14px;font-size:13px" id="connect">Connect</button>
+  </header>
+  <div class="ow-banner">⚠ Demo-only access control: a shared code sent in a header. Not secure and not production-ready banking authorisation. All customers, merchants and decisions are fictional; no real systems are contacted.</div>
+  <div class="ow-body">
+    <aside>
+      <div class="panel" style="display:flex;gap:6px;padding:10px" id="tabs">
+        <button class="chip solid-red" data-tab="apps" style="border:0;padding:8px 12px;cursor:pointer">Credit applications</button>
+        <button class="chip grey" data-tab="limits" style="border:0;padding:8px 12px;cursor:pointer">Limit increases <span id="c-lim"></span></button>
+      </div>
+      <div id="q-apps">
+        <div class="panel"><h2>Pending review <span class="count" id="c-pending">0</span></h2><div id="q-pending"></div></div>
+        <div class="panel"><h2>Awaiting customer (documents / details) <span class="count" id="c-await" style="background:#b7791f">0</span></h2><div id="q-await"></div></div>
+        <div class="panel"><h2>Decided / closed <span class="count" id="c-decided" style="background:#6b7690">0</span></h2><div id="q-decided"></div></div>
+      </div>
+      <div id="q-limits" style="display:none">
+        <div class="panel"><h2>Limit requests pending <span class="count" id="c-lpending">0</span></h2><div id="q-lpending"></div></div>
+        <div class="panel"><h2>Awaiting customer documents <span class="count" id="c-lawait" style="background:#b7791f">0</span></h2><div id="q-lawait"></div></div>
+        <div class="panel"><h2>Decided <span class="count" id="c-ldecided" style="background:#6b7690">0</span></h2><div id="q-ldecided"></div></div>
+      </div>
+      <div class="panel"><h2>Demo controls</h2>
+        <label class="check"><input type="checkbox" id="force-fail"><span>Force the <b>next</b> simulated payment to fail</span></label>
+        <div class="note" id="bdate">Demo business date: …</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0"><button class="btn ghost" data-adv="1" style="font-size:12px;padding:8px">+1 day</button><button class="btn ghost" data-adv="30" style="font-size:12px;padding:8px">+30 days</button></div>
+        <button class="btn ghost" id="reset" style="font-size:13px;padding:10px">Reset demo data</button>
+        <div class="note" style="margin-top:6px">Reset re-seeds fixtures so testers can replay scenarios.</div></div>
+    </aside>
+    <main id="case"><div class="panel placeholder">Enter the demo access code and select a case.</div></main>
+  </div>
+  <script src="/js/api.js"></script>
+  <script src="/js/officer.js"></script>
+</body>
+</html>

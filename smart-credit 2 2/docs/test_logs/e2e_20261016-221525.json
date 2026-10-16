@@ -1,0 +1,1813 @@
+{
+  "base_url": "http://127.0.0.1:8080",
+  "run_at": "20261016-221525",
+  "passed": 18,
+  "total": 18,
+  "results": [
+    {
+      "id": "01",
+      "scenario": "01 Eligible QR → automatic approval → loan",
+      "passed": true,
+      "detail": "DATA_READY → APPROVED (STP) → terms → PAYMENT_COMPLETED → loan LN-261016-0001 in My Loans",
+      "seconds": 1.25
+    },
+    {
+      "id": "02",
+      "scenario": "02 Mandatory T&C checkbox",
+      "passed": true,
+      "detail": "Method selection 422 TC_REQUIRED until the single T&C box is ticked",
+      "seconds": 0.04
+    },
+    {
+      "id": "03",
+      "scenario": "03 Amount below / above Pay Later range",
+      "passed": true,
+      "detail": "980K → BELOW_MIN, 95M → ABOVE_MAX (Pay Now still offered)",
+      "seconds": 0.06
+    },
+    {
+      "id": "04",
+      "scenario": "04 Sufficient profile, no unnecessary documents",
+      "passed": true,
+      "detail": "No CIC history, sufficient verified profile → APPROVED without document request",
+      "seconds": 1.26
+    },
+    {
+      "id": "05",
+      "scenario": "05 Poor profile → documents → officer more-docs → approve",
+      "passed": true,
+      "detail": "RF-02/RF-03 → documents → MANUAL_REVIEW → officer requests replacement → resubmit → officer approves",
+      "seconds": 0.14
+    },
+    {
+      "id": "06",
+      "scenario": "06 Missing information → resume",
+      "passed": true,
+      "detail": "INCOMPLETE → profile provided → re-assessed → APPROVED (then cancelled by customer)",
+      "seconds": 0.06
+    },
+    {
+      "id": "07",
+      "scenario": "07 Third-party consent only when needed (granted)",
+      "passed": true,
+      "detail": "INSUFFICIENT_EVIDENCE → contextual consent → granted → EV-3P → APPROVED (then cancelled by customer)",
+      "seconds": 0.06
+    },
+    {
+      "id": "08",
+      "scenario": "08 Third-party consent declined → manual review → reject",
+      "passed": true,
+      "detail": "Declined → not rejected; documents or manual review offered → manual review → officer rejects (no payment)",
+      "seconds": 0.09
+    },
+    {
+      "id": "09",
+      "scenario": "09 Manual review → request info → approve → pay",
+      "passed": true,
+      "detail": "VERIFY_DATA → officer requests document → upload → officer approves → confirm → paid",
+      "seconds": 1.36
+    },
+    {
+      "id": "10",
+      "scenario": "10 Rapid drain → documents → officer rejection",
+      "passed": true,
+      "detail": "R-REV-01 → documents → review → officer rejects → pay attempt 409",
+      "seconds": 0.14
+    },
+    {
+      "id": "11",
+      "scenario": "11 Checkout countdown, expiry and restart",
+      "passed": true,
+      "detail": "5:00 countdown → EXPIRED (cannot continue) → restart creates new checkout → cancel",
+      "seconds": 0.12
+    },
+    {
+      "id": "12",
+      "scenario": "12 Customer cancels during manual review",
+      "passed": true,
+      "detail": "Cancelled during manual review → officer approval returns 409; no payment possible",
+      "seconds": 0.11
+    },
+    {
+      "id": "13",
+      "scenario": "13 Payment failure then retry",
+      "passed": true,
+      "detail": "PAYMENT_FAILED (credit stays APPROVED, no loan) → retry → PAYMENT_COMPLETED",
+      "seconds": 2.55
+    },
+    {
+      "id": "14",
+      "scenario": "14 Pay Loan, reminders, due date, overdue",
+      "passed": true,
+      "detail": "Reminder (−3d) → due today → overdue (late fee 0, RF-01 set) → Pay Loan 2 instalments → outstanding 8M",
+      "seconds": 0.15
+    },
+    {
+      "id": "15",
+      "scenario": "15 Missed payment influences next assessment",
+      "passed": true,
+      "detail": "After a missed instalment, the next Pay Later request asks for documents (RF-01), not a decline",
+      "seconds": 0.1
+    },
+    {
+      "id": "16",
+      "scenario": "16 Credit limit exceeded → increase approved / rejected",
+      "passed": true,
+      "detail": "30M > available → limit request + payslip → officer approves 40M (available recalculated); 2nd request rejected (limit unchanged)",
+      "seconds": 0.27
+    },
+    {
+      "id": "17",
+      "scenario": "17 Cancelled/expired requests cannot be approved or paid",
+      "passed": true,
+      "detail": "Cancelled/expired requests: confirm 409, pay 409 TRANSACTION_CLOSED; paid QR re-scan 409",
+      "seconds": 0.13
+    },
+    {
+      "id": "18",
+      "scenario": "18 Pay Now from account",
+      "passed": true,
+      "detail": "Pay Now → simulated account debit → PAYMENT_COMPLETED (no credit application)",
+      "seconds": 1.29
+    }
+  ],
+  "steps": [
+    {
+      "scenario": "01",
+      "actor": "CUS-001",
+      "call": "POST /api/qr/resolve",
+      "status": 201,
+      "note": "scan QR-261016-0842",
+      "audit_events": [
+        2,
+        2
+      ]
+    },
+    {
+      "scenario": "01",
+      "actor": "CUS-001",
+      "call": "POST /api/transactions/TXN-261016-0001/terms-and-conditions",
+      "status": 200,
+      "note": "tick T&C checkbox",
+      "audit_events": [
+        3,
+        3
+      ],
+      "result": "CHECKOUT | tx=QR_CREATED | credit=None | readiness=None"
+    },
+    {
+      "scenario": "01",
+      "actor": "CUS-001",
+      "call": "POST /api/transactions/TXN-261016-0001/payment-method",
+      "status": 200,
+      "note": "choose Pay Later",
+      "audit_events": [
+        4,
+        7
+      ],
+      "result": "READY_TO_ASSESS | tx=CONSENT_COMPLETED | credit=ASSESSMENT_PENDING | readiness=None"
+    },
+    {
+      "scenario": "01",
+      "actor": "CUS-001",
+      "call": "POST /api/applications/APP-261016-0001/assess",
+      "status": 200,
+      "note": "assess",
+      "audit_events": [
+        8,
+        13
+      ],
+      "result": "APPROVED_TERMS_PENDING | tx=TERMS_PENDING_CONFIRMATION | credit=APPROVED | readiness=DATA_READY"
+    },
+    {
+      "scenario": "01",
+      "actor": "CUS-001",
+      "call": "POST /api/applications/APP-261016-0001/terms/confirm",
+      "status": 200,
+      "note": "confirm terms",
+      "audit_events": [
+        14,
+        14
+      ],
+      "result": "APPROVED_TERMS_PENDING | tx=TERMS_PENDING_CONFIRMATION | credit=APPROVED | readiness=DATA_READY"
+    },
+    {
+      "scenario": "01",
+      "actor": "CUS-001",
+      "call": "POST /api/transactions/TXN-261016-0001/pay",
+      "status": 200,
+      "note": "pay",
+      "audit_events": [
+        15,
+        17
+      ],
+      "result": "PAYMENT_COMPLETED | tx=PAYMENT_COMPLETED | credit=APPROVED | readiness=DATA_READY"
+    },
+    {
+      "scenario": "01",
+      "actor": "CUS-001",
+      "call": "GET /api/loans",
+      "status": 200,
+      "note": "My Loans",
+      "audit_events": null
+    },
+    {
+      "scenario": "02",
+      "actor": "CUS-001",
+      "call": "POST /api/qr/resolve",
+      "status": 201,
+      "note": "scan QR-261016-2004",
+      "audit_events": [
+        18,
+        18
+      ]
+    },
+    {
+      "scenario": "02",
+      "actor": "CUS-001",
+      "call": "POST /api/transactions/TXN-261016-0002/payment-method",
+      "status": 422,
+      "note": "try without T&C",
+      "audit_events": null,
+      "result": "TC_REQUIRED"
+    },
+    {
+      "scenario": "02",
+      "actor": "CUS-001",
+      "call": "POST /api/transactions/TXN-261016-0002/terms-and-conditions",
+      "status": 422,
+      "note": "unticked box",
+      "audit_events": null,
+      "result": "TC_NOT_ACCEPTED"
+    },
+    {
+      "scenario": "02",
+      "actor": "CUS-001",
+      "call": "POST /api/transactions/TXN-261016-0002/terms-and-conditions",
+      "status": 200,
+      "note": "tick box",
+      "audit_events": [
+        19,
+        19
+      ],
+      "result": "CHECKOUT | tx=QR_CREATED | credit=None | readiness=None"
+    },
+    {
+      "scenario": "02",
+      "actor": "CUS-001",
+      "call": "POST /api/transactions/TXN-261016-0002/cancel",
+      "status": 200,
+      "note": "cancel",
+      "audit_events": [
+        20,
+        20
+      ],
+      "result": "CANCELLED | tx=CANCELLED | credit=None | readiness=None"
+    },
+    {
+      "scenario": "03",
+      "actor": "CUS-001",
+      "call": "POST /api/qr/resolve",
+      "status": 201,
+      "note": "scan QR-261016-1830",
+      "audit_events": [
+        21,
+        21
+      ]
+    },
+    {
+      "scenario": "03",
+      "actor": "CUS-001",
+      "call": "POST /api/transactions/TXN-261016-0003/terms-and-conditions",
+      "status": 200,
+      "note": "tick T&C checkbox",
+      "audit_events": [
+        22,
+        22
+      ],
+      "result": "CHECKOUT | tx=QR_CREATED | credit=None | readiness=None"
+    },
+    {
+      "scenario": "03",
+      "actor": "CUS-001",
+      "call": "POST /api/transactions/TXN-261016-0003/payment-method",
+      "status": 422,
+      "note": "Pay Later QR-261016-1830",
+      "audit_events": null,
+      "result": "PAY_LATER_OUT_OF_RANGE"
+    },
+    {
+      "scenario": "03",
+      "actor": "CUS-001",
+      "call": "POST /api/transactions/TXN-261016-0003/cancel",
+      "status": 200,
+      "note": "cancel",
+      "audit_events": [
+        23,
+        23
+      ],
+      "result": "CANCELLED | tx=CANCELLED | credit=None | readiness=None"
+    },
+    {
+      "scenario": "03",
+      "actor": "CUS-001",
+      "call": "POST /api/qr/resolve",
+      "status": 201,
+      "note": "scan QR-261016-1915",
+      "audit_events": [
+        24,
+        24
+      ]
+    },
+    {
+      "scenario": "03",
+      "actor": "CUS-001",
+      "call": "POST /api/transactions/TXN-261016-0004/terms-and-conditions",
+      "status": 200,
+      "note": "tick T&C checkbox",
+      "audit_events": [
+        25,
+        25
+      ],
+      "result": "CHECKOUT | tx=QR_CREATED | credit=None | readiness=None"
+    },
+    {
+      "scenario": "03",
+      "actor": "CUS-001",
+      "call": "POST /api/transactions/TXN-261016-0004/payment-method",
+      "status": 422,
+      "note": "Pay Later QR-261016-1915",
+      "audit_events": null,
+      "result": "PAY_LATER_OUT_OF_RANGE"
+    },
+    {
+      "scenario": "03",
+      "actor": "CUS-001",
+      "call": "POST /api/transactions/TXN-261016-0004/cancel",
+      "status": 200,
+      "note": "cancel",
+      "audit_events": [
+        26,
+        26
+      ],
+      "result": "CANCELLED | tx=CANCELLED | credit=None | readiness=None"
+    },
+    {
+      "scenario": "04",
+      "actor": "CUS-007",
+      "call": "POST /api/qr/resolve",
+      "status": 201,
+      "note": "scan QR-261016-1505",
+      "audit_events": [
+        27,
+        27
+      ]
+    },
+    {
+      "scenario": "04",
+      "actor": "CUS-007",
+      "call": "POST /api/transactions/TXN-261016-0005/terms-and-conditions",
+      "status": 200,
+      "note": "tick T&C checkbox",
+      "audit_events": [
+        28,
+        28
+      ],
+      "result": "CHECKOUT | tx=QR_CREATED | credit=None | readiness=None"
+    },
+    {
+      "scenario": "04",
+      "actor": "CUS-007",
+      "call": "POST /api/transactions/TXN-261016-0005/payment-method",
+      "status": 200,
+      "note": "choose Pay Later",
+      "audit_events": [
+        29,
+        32
+      ],
+      "result": "READY_TO_ASSESS | tx=CONSENT_COMPLETED | credit=ASSESSMENT_PENDING | readiness=None"
+    },
+    {
+      "scenario": "04",
+      "actor": "CUS-007",
+      "call": "POST /api/applications/APP-261016-0002/assess",
+      "status": 200,
+      "note": "assess",
+      "audit_events": [
+        33,
+        38
+      ],
+      "result": "APPROVED_TERMS_PENDING | tx=TERMS_PENDING_CONFIRMATION | credit=APPROVED | readiness=DATA_READY"
+    },
+    {
+      "scenario": "04",
+      "actor": "CUS-007",
+      "call": "POST /api/applications/APP-261016-0002/terms/confirm",
+      "status": 200,
+      "note": "confirm terms",
+      "audit_events": [
+        39,
+        39
+      ],
+      "result": "APPROVED_TERMS_PENDING | tx=TERMS_PENDING_CONFIRMATION | credit=APPROVED | readiness=DATA_READY"
+    },
+    {
+      "scenario": "04",
+      "actor": "CUS-007",
+      "call": "POST /api/transactions/TXN-261016-0005/pay",
+      "status": 200,
+      "note": "pay",
+      "audit_events": [
+        40,
+        42
+      ],
+      "result": "PAYMENT_COMPLETED | tx=PAYMENT_COMPLETED | credit=APPROVED | readiness=DATA_READY"
+    },
+    {
+      "scenario": "05",
+      "actor": "CUS-002",
+      "call": "POST /api/qr/resolve",
+      "status": 201,
+      "note": "scan QR-261016-0915",
+      "audit_events": [
+        43,
+        43
+      ]
+    },
+    {
+      "scenario": "05",
+      "actor": "CUS-002",
+      "call": "POST /api/transactions/TXN-261016-0006/terms-and-conditions",
+      "status": 200,
+      "note": "tick T&C checkbox",
+      "audit_events": [
+        44,
+        44
+      ],
+      "result": "CHECKOUT | tx=QR_CREATED | credit=None | readiness=None"
+    },
+    {
+      "scenario": "05",
+      "actor": "CUS-002",
+      "call": "POST /api/transactions/TXN-261016-0006/payment-method",
+      "status": 200,
+      "note": "choose Pay Later",
+      "audit_events": [
+        45,
+        48
+      ],
+      "result": "READY_TO_ASSESS | tx=CONSENT_COMPLETED | credit=ASSESSMENT_PENDING | readiness=None"
+    },
+    {
+      "scenario": "05",
+      "actor": "CUS-002",
+      "call": "POST /api/applications/APP-261016-0003/assess",
+      "status": 200,
+      "note": "assess",
+      "audit_events": [
+        49,
+        54
+      ],
+      "result": "MORE_INFO_REQUIRED | tx=PENDING_REVIEW | credit=MORE_INFORMATION_REQUIRED | readiness=DATA_READY"
+    },
+    {
+      "scenario": "05",
+      "actor": "CUS-002",
+      "call": "POST /api/applications/APP-261016-0003/documents",
+      "status": 200,
+      "note": "upload payslip",
+      "audit_events": [
+        55,
+        55
+      ],
+      "result": "MORE_INFO_REQUIRED | tx=PENDING_REVIEW | credit=MORE_INFORMATION_REQUIRED | readiness=DATA_READY"
+    },
+    {
+      "scenario": "05",
+      "actor": "CUS-002",
+      "call": "POST /api/applications/APP-261016-0003/documents",
+      "status": 200,
+      "note": "upload bank_statement",
+      "audit_events": [
+        56,
+        56
+      ],
+      "result": "MORE_INFO_REQUIRED | tx=PENDING_REVIEW | credit=MORE_INFORMATION_REQUIRED | readiness=DATA_READY"
+    },
+    {
+      "scenario": "05",
+      "actor": "CUS-002",
+      "call": "POST /api/applications/APP-261016-0003/information",
+      "status": 200,
+      "note": "submit documents",
+      "audit_events": [
+        57,
+        65
+      ],
+      "result": "UNDER_REVIEW | tx=PENDING_REVIEW | credit=MANUAL_REVIEW | readiness=VERIFY_DATA"
+    },
+    {
+      "scenario": "05",
+      "actor": "officer",
+      "call": "GET /api/officer/cases/APP-261016-0003",
+      "status": 200,
+      "note": "officer opens case",
+      "audit_events": null
+    },
+    {
+      "scenario": "05",
+      "actor": "officer",
+      "call": "POST /api/officer/cases/APP-261016-0003/decision",
+      "status": 200,
+      "note": "officer request_info",
+      "audit_events": [
+        66,
+        68
+      ]
+    },
+    {
+      "scenario": "05",
+      "actor": "CUS-002",
+      "call": "POST /api/applications/APP-261016-0003/documents",
+      "status": 200,
+      "note": "upload bank_statement",
+      "audit_events": [
+        69,
+        69
+      ],
+      "result": "MORE_INFO_REQUIRED | tx=PENDING_REVIEW | credit=MORE_INFORMATION_REQUIRED | readiness=VERIFY_DATA"
+    },
+    {
+      "scenario": "05",
+      "actor": "CUS-002",
+      "call": "POST /api/applications/APP-261016-0003/information",
+      "status": 200,
+      "note": "resubmit",
+      "audit_events": [
+        70,
+        78
+      ],
+      "result": "UNDER_REVIEW | tx=PENDING_REVIEW | credit=MANUAL_REVIEW | readiness=VERIFY_DATA"
+    },
+    {
+      "scenario": "05",
+      "actor": "officer",
+      "call": "GET /api/officer/cases/APP-261016-0003",
+      "status": 200,
+      "note": "officer opens case",
+      "audit_events": null
+    },
+    {
+      "scenario": "05",
+      "actor": "officer",
+      "call": "POST /api/officer/cases/APP-261016-0003/decision",
+      "status": 200,
+      "note": "officer approve",
+      "audit_events": [
+        79,
+        81
+      ]
+    },
+    {
+      "scenario": "05",
+      "actor": "CUS-002",
+      "call": "GET /api/transactions/TXN-261016-0006",
+      "status": 200,
+      "note": "customer view",
+      "audit_events": null,
+      "result": "APPROVED_TERMS_PENDING | tx=TERMS_PENDING_CONFIRMATION | credit=APPROVED | readiness=VERIFY_DATA"
+    },
+    {
+      "scenario": "06",
+      "actor": "CUS-006",
+      "call": "POST /api/qr/resolve",
+      "status": 201,
+      "note": "scan QR-261016-2110",
+      "audit_events": [
+        82,
+        82
+      ]
+    },
+    {
+      "scenario": "06",
+      "actor": "CUS-006",
+      "call": "POST /api/transactions/TXN-261016-0007/terms-and-conditions",
+      "status": 200,
+      "note": "tick T&C checkbox",
+      "audit_events": [
+        83,
+        83
+      ],
+      "result": "CHECKOUT | tx=QR_CREATED | credit=None | readiness=None"
+    },
+    {
+      "scenario": "06",
+      "actor": "CUS-006",
+      "call": "POST /api/transactions/TXN-261016-0007/payment-method",
+      "status": 200,
+      "note": "choose Pay Later",
+      "audit_events": [
+        84,
+        87
+      ],
+      "result": "READY_TO_ASSESS | tx=CONSENT_COMPLETED | credit=ASSESSMENT_PENDING | readiness=None"
+    },
+    {
+      "scenario": "06",
+      "actor": "CUS-006",
+      "call": "POST /api/applications/APP-261016-0004/assess",
+      "status": 200,
+      "note": "assess",
+      "audit_events": [
+        88,
+        93
+      ],
+      "result": "MORE_INFO_REQUIRED | tx=PENDING_REVIEW | credit=MORE_INFORMATION_REQUIRED | readiness=INCOMPLETE"
+    },
+    {
+      "scenario": "06",
+      "actor": "CUS-006",
+      "call": "POST /api/applications/APP-261016-0004/information",
+      "status": 200,
+      "note": "provide profile",
+      "audit_events": [
+        94,
+        101
+      ],
+      "result": "APPROVED_TERMS_PENDING | tx=TERMS_PENDING_CONFIRMATION | credit=APPROVED | readiness=DATA_READY"
+    },
+    {
+      "scenario": "06",
+      "actor": "CUS-006",
+      "call": "POST /api/transactions/TXN-261016-0007/cancel",
+      "status": 200,
+      "note": "customer cancels before confirming",
+      "audit_events": [
+        102,
+        102
+      ],
+      "result": "CANCELLED | tx=CANCELLED | credit=APPROVED | readiness=DATA_READY"
+    },
+    {
+      "scenario": "07",
+      "actor": "CUS-005",
+      "call": "POST /api/qr/resolve",
+      "status": 201,
+      "note": "scan QR-261016-1240",
+      "audit_events": [
+        103,
+        103
+      ]
+    },
+    {
+      "scenario": "07",
+      "actor": "CUS-005",
+      "call": "POST /api/transactions/TXN-261016-0008/terms-and-conditions",
+      "status": 200,
+      "note": "tick T&C checkbox",
+      "audit_events": [
+        104,
+        104
+      ],
+      "result": "CHECKOUT | tx=QR_CREATED | credit=None | readiness=None"
+    },
+    {
+      "scenario": "07",
+      "actor": "CUS-005",
+      "call": "POST /api/transactions/TXN-261016-0008/payment-method",
+      "status": 200,
+      "note": "choose Pay Later",
+      "audit_events": [
+        105,
+        108
+      ],
+      "result": "READY_TO_ASSESS | tx=CONSENT_COMPLETED | credit=ASSESSMENT_PENDING | readiness=None"
+    },
+    {
+      "scenario": "07",
+      "actor": "CUS-005",
+      "call": "POST /api/applications/APP-261016-0005/assess",
+      "status": 200,
+      "note": "assess",
+      "audit_events": [
+        109,
+        114
+      ],
+      "result": "MORE_INFO_REQUIRED | tx=PENDING_REVIEW | credit=MORE_INFORMATION_REQUIRED | readiness=INSUFFICIENT_EVIDENCE"
+    },
+    {
+      "scenario": "07",
+      "actor": "CUS-005",
+      "call": "POST /api/applications/APP-261016-0005/third-party-consent",
+      "status": 200,
+      "note": "allow partner check",
+      "audit_events": [
+        115,
+        122
+      ],
+      "result": "APPROVED_TERMS_PENDING | tx=TERMS_PENDING_CONFIRMATION | credit=APPROVED | readiness=DATA_READY"
+    },
+    {
+      "scenario": "07",
+      "actor": "CUS-005",
+      "call": "POST /api/transactions/TXN-261016-0008/cancel",
+      "status": 200,
+      "note": "customer cancels before confirming",
+      "audit_events": [
+        123,
+        123
+      ],
+      "result": "CANCELLED | tx=CANCELLED | credit=APPROVED | readiness=DATA_READY"
+    },
+    {
+      "scenario": "08",
+      "actor": "CUS-005",
+      "call": "POST /api/qr/resolve",
+      "status": 201,
+      "note": "scan QR-261016-1240",
+      "audit_events": [
+        124,
+        124
+      ]
+    },
+    {
+      "scenario": "08",
+      "actor": "CUS-005",
+      "call": "POST /api/transactions/TXN-261016-0009/terms-and-conditions",
+      "status": 200,
+      "note": "tick T&C checkbox",
+      "audit_events": [
+        125,
+        125
+      ],
+      "result": "CHECKOUT | tx=QR_CREATED | credit=None | readiness=None"
+    },
+    {
+      "scenario": "08",
+      "actor": "CUS-005",
+      "call": "POST /api/transactions/TXN-261016-0009/payment-method",
+      "status": 200,
+      "note": "choose Pay Later",
+      "audit_events": [
+        126,
+        129
+      ],
+      "result": "READY_TO_ASSESS | tx=CONSENT_COMPLETED | credit=ASSESSMENT_PENDING | readiness=None"
+    },
+    {
+      "scenario": "08",
+      "actor": "CUS-005",
+      "call": "POST /api/applications/APP-261016-0006/assess",
+      "status": 200,
+      "note": "assess",
+      "audit_events": [
+        130,
+        135
+      ],
+      "result": "MORE_INFO_REQUIRED | tx=PENDING_REVIEW | credit=MORE_INFORMATION_REQUIRED | readiness=INSUFFICIENT_EVIDENCE"
+    },
+    {
+      "scenario": "08",
+      "actor": "CUS-005",
+      "call": "POST /api/applications/APP-261016-0006/third-party-consent",
+      "status": 200,
+      "note": "decline partner check",
+      "audit_events": [
+        136,
+        136
+      ],
+      "result": "MORE_INFO_REQUIRED | tx=PENDING_REVIEW | credit=MORE_INFORMATION_REQUIRED | readiness=INSUFFICIENT_EVIDENCE"
+    },
+    {
+      "scenario": "08",
+      "actor": "CUS-005",
+      "call": "POST /api/applications/APP-261016-0006/manual-review",
+      "status": 200,
+      "note": "request manual review",
+      "audit_events": [
+        137,
+        138
+      ],
+      "result": "UNDER_REVIEW | tx=PENDING_REVIEW | credit=MANUAL_REVIEW | readiness=INSUFFICIENT_EVIDENCE"
+    },
+    {
+      "scenario": "08",
+      "actor": "officer",
+      "call": "GET /api/officer/cases/APP-261016-0006",
+      "status": 200,
+      "note": "officer opens case",
+      "audit_events": null
+    },
+    {
+      "scenario": "08",
+      "actor": "officer",
+      "call": "POST /api/officer/cases/APP-261016-0006/decision",
+      "status": 200,
+      "note": "officer reject",
+      "audit_events": [
+        139,
+        141
+      ]
+    },
+    {
+      "scenario": "08",
+      "actor": "CUS-005",
+      "call": "GET /api/transactions/TXN-261016-0009",
+      "status": 200,
+      "note": "customer view",
+      "audit_events": null,
+      "result": "REJECTED | tx=CANCELLED | credit=REJECTED | readiness=INSUFFICIENT_EVIDENCE"
+    },
+    {
+      "scenario": "09",
+      "actor": "CUS-003",
+      "call": "POST /api/qr/resolve",
+      "status": 201,
+      "note": "scan QR-261016-1021",
+      "audit_events": [
+        142,
+        142
+      ]
+    },
+    {
+      "scenario": "09",
+      "actor": "CUS-003",
+      "call": "POST /api/transactions/TXN-261016-0010/terms-and-conditions",
+      "status": 200,
+      "note": "tick T&C checkbox",
+      "audit_events": [
+        143,
+        143
+      ],
+      "result": "CHECKOUT | tx=QR_CREATED | credit=None | readiness=None"
+    },
+    {
+      "scenario": "09",
+      "actor": "CUS-003",
+      "call": "POST /api/transactions/TXN-261016-0010/payment-method",
+      "status": 200,
+      "note": "choose Pay Later",
+      "audit_events": [
+        144,
+        147
+      ],
+      "result": "READY_TO_ASSESS | tx=CONSENT_COMPLETED | credit=ASSESSMENT_PENDING | readiness=None"
+    },
+    {
+      "scenario": "09",
+      "actor": "CUS-003",
+      "call": "POST /api/applications/APP-261016-0007/assess",
+      "status": 200,
+      "note": "assess",
+      "audit_events": [
+        148,
+        154
+      ],
+      "result": "UNDER_REVIEW | tx=PENDING_REVIEW | credit=MANUAL_REVIEW | readiness=VERIFY_DATA"
+    },
+    {
+      "scenario": "09",
+      "actor": "officer",
+      "call": "GET /api/officer/cases/APP-261016-0007",
+      "status": 200,
+      "note": "officer opens case",
+      "audit_events": null
+    },
+    {
+      "scenario": "09",
+      "actor": "officer",
+      "call": "POST /api/officer/cases/APP-261016-0007/decision",
+      "status": 200,
+      "note": "officer request_info",
+      "audit_events": [
+        155,
+        157
+      ]
+    },
+    {
+      "scenario": "09",
+      "actor": "CUS-003",
+      "call": "POST /api/applications/APP-261016-0007/documents",
+      "status": 200,
+      "note": "upload bank_statement",
+      "audit_events": [
+        158,
+        158
+      ],
+      "result": "MORE_INFO_REQUIRED | tx=PENDING_REVIEW | credit=MORE_INFORMATION_REQUIRED | readiness=VERIFY_DATA"
+    },
+    {
+      "scenario": "09",
+      "actor": "CUS-003",
+      "call": "POST /api/applications/APP-261016-0007/information",
+      "status": 200,
+      "note": "submit",
+      "audit_events": [
+        159,
+        167
+      ],
+      "result": "UNDER_REVIEW | tx=PENDING_REVIEW | credit=MANUAL_REVIEW | readiness=VERIFY_DATA"
+    },
+    {
+      "scenario": "09",
+      "actor": "officer",
+      "call": "GET /api/officer/cases/APP-261016-0007",
+      "status": 200,
+      "note": "officer opens case",
+      "audit_events": null
+    },
+    {
+      "scenario": "09",
+      "actor": "officer",
+      "call": "POST /api/officer/cases/APP-261016-0007/decision",
+      "status": 200,
+      "note": "officer approve",
+      "audit_events": [
+        168,
+        170
+      ]
+    },
+    {
+      "scenario": "09",
+      "actor": "CUS-003",
+      "call": "GET /api/transactions/TXN-261016-0010",
+      "status": 200,
+      "note": "customer view",
+      "audit_events": null,
+      "result": "APPROVED_TERMS_PENDING | tx=TERMS_PENDING_CONFIRMATION | credit=APPROVED | readiness=VERIFY_DATA"
+    },
+    {
+      "scenario": "09",
+      "actor": "CUS-003",
+      "call": "POST /api/applications/APP-261016-0007/terms/confirm",
+      "status": 200,
+      "note": "confirm terms",
+      "audit_events": [
+        171,
+        171
+      ],
+      "result": "APPROVED_TERMS_PENDING | tx=TERMS_PENDING_CONFIRMATION | credit=APPROVED | readiness=VERIFY_DATA"
+    },
+    {
+      "scenario": "09",
+      "actor": "CUS-003",
+      "call": "POST /api/transactions/TXN-261016-0010/pay",
+      "status": 200,
+      "note": "pay",
+      "audit_events": [
+        172,
+        174
+      ],
+      "result": "PAYMENT_COMPLETED | tx=PAYMENT_COMPLETED | credit=APPROVED | readiness=VERIFY_DATA"
+    },
+    {
+      "scenario": "10",
+      "actor": "CUS-004",
+      "call": "POST /api/qr/resolve",
+      "status": 201,
+      "note": "scan QR-261016-1133",
+      "audit_events": [
+        175,
+        175
+      ]
+    },
+    {
+      "scenario": "10",
+      "actor": "CUS-004",
+      "call": "POST /api/transactions/TXN-261016-0011/terms-and-conditions",
+      "status": 200,
+      "note": "tick T&C checkbox",
+      "audit_events": [
+        176,
+        176
+      ],
+      "result": "CHECKOUT | tx=QR_CREATED | credit=None | readiness=None"
+    },
+    {
+      "scenario": "10",
+      "actor": "CUS-004",
+      "call": "POST /api/transactions/TXN-261016-0011/payment-method",
+      "status": 200,
+      "note": "choose Pay Later",
+      "audit_events": [
+        177,
+        180
+      ],
+      "result": "READY_TO_ASSESS | tx=CONSENT_COMPLETED | credit=ASSESSMENT_PENDING | readiness=None"
+    },
+    {
+      "scenario": "10",
+      "actor": "CUS-004",
+      "call": "POST /api/applications/APP-261016-0008/assess",
+      "status": 200,
+      "note": "assess",
+      "audit_events": [
+        181,
+        186
+      ],
+      "result": "MORE_INFO_REQUIRED | tx=PENDING_REVIEW | credit=MORE_INFORMATION_REQUIRED | readiness=DATA_READY"
+    },
+    {
+      "scenario": "10",
+      "actor": "CUS-004",
+      "call": "POST /api/applications/APP-261016-0008/documents",
+      "status": 200,
+      "note": "upload payslip",
+      "audit_events": [
+        187,
+        187
+      ],
+      "result": "MORE_INFO_REQUIRED | tx=PENDING_REVIEW | credit=MORE_INFORMATION_REQUIRED | readiness=DATA_READY"
+    },
+    {
+      "scenario": "10",
+      "actor": "CUS-004",
+      "call": "POST /api/applications/APP-261016-0008/documents",
+      "status": 200,
+      "note": "upload bank_statement",
+      "audit_events": [
+        188,
+        188
+      ],
+      "result": "MORE_INFO_REQUIRED | tx=PENDING_REVIEW | credit=MORE_INFORMATION_REQUIRED | readiness=DATA_READY"
+    },
+    {
+      "scenario": "10",
+      "actor": "CUS-004",
+      "call": "POST /api/applications/APP-261016-0008/information",
+      "status": 200,
+      "note": "submit",
+      "audit_events": [
+        189,
+        197
+      ],
+      "result": "UNDER_REVIEW | tx=PENDING_REVIEW | credit=MANUAL_REVIEW | readiness=VERIFY_DATA"
+    },
+    {
+      "scenario": "10",
+      "actor": "officer",
+      "call": "GET /api/officer/cases/APP-261016-0008",
+      "status": 200,
+      "note": "officer opens case",
+      "audit_events": null
+    },
+    {
+      "scenario": "10",
+      "actor": "officer",
+      "call": "POST /api/officer/cases/APP-261016-0008/decision",
+      "status": 200,
+      "note": "officer reject",
+      "audit_events": [
+        198,
+        200
+      ]
+    },
+    {
+      "scenario": "10",
+      "actor": "CUS-004",
+      "call": "POST /api/transactions/TXN-261016-0011/pay",
+      "status": 409,
+      "note": "try to pay",
+      "audit_events": null,
+      "result": "TRANSACTION_CLOSED"
+    },
+    {
+      "scenario": "11",
+      "actor": "CUS-001",
+      "call": "POST /api/qr/resolve",
+      "status": 201,
+      "note": "scan QR-261016-2230",
+      "audit_events": [
+        201,
+        201
+      ]
+    },
+    {
+      "scenario": "11",
+      "actor": "CUS-001",
+      "call": "POST /api/transactions/TXN-261016-0012/terms-and-conditions",
+      "status": 200,
+      "note": "tick T&C checkbox",
+      "audit_events": [
+        202,
+        202
+      ],
+      "result": "CHECKOUT | tx=QR_CREATED | credit=None | readiness=None"
+    },
+    {
+      "scenario": "11",
+      "actor": "CUS-001",
+      "call": "GET /api/transactions/TXN-261016-0012",
+      "status": 200,
+      "note": "countdown",
+      "audit_events": null,
+      "result": "CHECKOUT | tx=QR_CREATED | credit=None | readiness=None"
+    },
+    {
+      "scenario": "11",
+      "actor": "CUS-001",
+      "call": "POST /api/demo/transactions/TXN-261016-0012/expire-now",
+      "status": 200,
+      "note": "simulate 5-minute timeout",
+      "audit_events": [
+        203,
+        204
+      ]
+    },
+    {
+      "scenario": "11",
+      "actor": "CUS-001",
+      "call": "GET /api/transactions/TXN-261016-0012",
+      "status": 200,
+      "note": "view after expiry",
+      "audit_events": null,
+      "result": "EXPIRED | tx=EXPIRED | credit=None | readiness=None"
+    },
+    {
+      "scenario": "11",
+      "actor": "CUS-001",
+      "call": "POST /api/transactions/TXN-261016-0012/payment-method",
+      "status": 409,
+      "note": "try to continue",
+      "audit_events": null,
+      "result": "INVALID_TRANSACTION_STATE"
+    },
+    {
+      "scenario": "11",
+      "actor": "CUS-001",
+      "call": "POST /api/qr/resolve",
+      "status": 201,
+      "note": "scan QR-261016-2230",
+      "audit_events": [
+        205,
+        205
+      ]
+    },
+    {
+      "scenario": "11",
+      "actor": "CUS-001",
+      "call": "POST /api/transactions/TXN-261016-0013/terms-and-conditions",
+      "status": 200,
+      "note": "tick T&C checkbox",
+      "audit_events": [
+        206,
+        206
+      ],
+      "result": "CHECKOUT | tx=QR_CREATED | credit=None | readiness=None"
+    },
+    {
+      "scenario": "11",
+      "actor": "CUS-001",
+      "call": "POST /api/transactions/TXN-261016-0013/cancel",
+      "status": 200,
+      "note": "cancel restarted checkout",
+      "audit_events": [
+        207,
+        207
+      ],
+      "result": "CANCELLED | tx=CANCELLED | credit=None | readiness=None"
+    },
+    {
+      "scenario": "12",
+      "actor": "officer",
+      "call": "GET /api/officer/cases",
+      "status": 200,
+      "note": "",
+      "audit_events": null
+    },
+    {
+      "scenario": "12",
+      "actor": "CUS-003",
+      "call": "POST /api/qr/resolve",
+      "status": 201,
+      "note": "scan QR-261016-2004",
+      "audit_events": [
+        208,
+        208
+      ]
+    },
+    {
+      "scenario": "12",
+      "actor": "CUS-003",
+      "call": "POST /api/transactions/TXN-261016-0014/terms-and-conditions",
+      "status": 200,
+      "note": "tick T&C checkbox",
+      "audit_events": [
+        209,
+        209
+      ],
+      "result": "CHECKOUT | tx=QR_CREATED | credit=None | readiness=None"
+    },
+    {
+      "scenario": "12",
+      "actor": "CUS-003",
+      "call": "POST /api/transactions/TXN-261016-0014/payment-method",
+      "status": 200,
+      "note": "choose Pay Later",
+      "audit_events": [
+        210,
+        213
+      ],
+      "result": "READY_TO_ASSESS | tx=CONSENT_COMPLETED | credit=ASSESSMENT_PENDING | readiness=None"
+    },
+    {
+      "scenario": "12",
+      "actor": "CUS-003",
+      "call": "POST /api/applications/APP-261016-0009/assess",
+      "status": 200,
+      "note": "assess",
+      "audit_events": [
+        214,
+        220
+      ],
+      "result": "UNDER_REVIEW | tx=PENDING_REVIEW | credit=MANUAL_REVIEW | readiness=VERIFY_DATA"
+    },
+    {
+      "scenario": "12",
+      "actor": "CUS-003",
+      "call": "POST /api/transactions/TXN-261016-0014/cancel",
+      "status": 200,
+      "note": "customer cancels during review",
+      "audit_events": [
+        221,
+        221
+      ],
+      "result": "CANCELLED | tx=CANCELLED | credit=MANUAL_REVIEW | readiness=VERIFY_DATA"
+    },
+    {
+      "scenario": "12",
+      "actor": "officer",
+      "call": "GET /api/officer/cases/APP-261016-0009",
+      "status": 200,
+      "note": "officer opens case",
+      "audit_events": null
+    },
+    {
+      "scenario": "12",
+      "actor": "officer",
+      "call": "POST /api/officer/cases/APP-261016-0009/decision",
+      "status": 409,
+      "note": "officer approve",
+      "audit_events": null,
+      "result": "INVALID_TRANSACTION_STATE"
+    },
+    {
+      "scenario": "13",
+      "actor": "officer",
+      "call": "POST /api/demo/controls",
+      "status": 200,
+      "note": "demo control: fail next simulated payment",
+      "audit_events": [
+        222,
+        222
+      ]
+    },
+    {
+      "scenario": "13",
+      "actor": "CUS-007",
+      "call": "POST /api/qr/resolve",
+      "status": 201,
+      "note": "scan QR-261016-2110",
+      "audit_events": [
+        223,
+        223
+      ]
+    },
+    {
+      "scenario": "13",
+      "actor": "CUS-007",
+      "call": "POST /api/transactions/TXN-261016-0015/terms-and-conditions",
+      "status": 200,
+      "note": "tick T&C checkbox",
+      "audit_events": [
+        224,
+        224
+      ],
+      "result": "CHECKOUT | tx=QR_CREATED | credit=None | readiness=None"
+    },
+    {
+      "scenario": "13",
+      "actor": "CUS-007",
+      "call": "POST /api/transactions/TXN-261016-0015/payment-method",
+      "status": 200,
+      "note": "choose Pay Later",
+      "audit_events": [
+        225,
+        228
+      ],
+      "result": "READY_TO_ASSESS | tx=CONSENT_COMPLETED | credit=ASSESSMENT_PENDING | readiness=None"
+    },
+    {
+      "scenario": "13",
+      "actor": "CUS-007",
+      "call": "POST /api/applications/APP-261016-0010/assess",
+      "status": 200,
+      "note": "assess",
+      "audit_events": [
+        229,
+        234
+      ],
+      "result": "APPROVED_TERMS_PENDING | tx=TERMS_PENDING_CONFIRMATION | credit=APPROVED | readiness=DATA_READY"
+    },
+    {
+      "scenario": "13",
+      "actor": "CUS-007",
+      "call": "POST /api/applications/APP-261016-0010/terms/confirm",
+      "status": 200,
+      "note": "confirm terms",
+      "audit_events": [
+        235,
+        235
+      ],
+      "result": "APPROVED_TERMS_PENDING | tx=TERMS_PENDING_CONFIRMATION | credit=APPROVED | readiness=DATA_READY"
+    },
+    {
+      "scenario": "13",
+      "actor": "CUS-007",
+      "call": "POST /api/transactions/TXN-261016-0015/pay",
+      "status": 200,
+      "note": "pay",
+      "audit_events": [
+        236,
+        237
+      ],
+      "result": "PAYMENT_FAILED | tx=PAYMENT_FAILED | credit=APPROVED | readiness=DATA_READY"
+    },
+    {
+      "scenario": "13",
+      "actor": "CUS-007",
+      "call": "POST /api/transactions/TXN-261016-0015/pay",
+      "status": 200,
+      "note": "retry",
+      "audit_events": [
+        238,
+        240
+      ],
+      "result": "PAYMENT_COMPLETED | tx=PAYMENT_COMPLETED | credit=APPROVED | readiness=DATA_READY"
+    },
+    {
+      "scenario": "14",
+      "actor": "CUS-001",
+      "call": "GET /api/loans",
+      "status": 200,
+      "note": "My Loans",
+      "audit_events": null
+    },
+    {
+      "scenario": "14",
+      "actor": "demo",
+      "call": "POST /api/demo/clock",
+      "status": 200,
+      "note": "demo date: 3 days before due",
+      "audit_events": [
+        241,
+        241
+      ]
+    },
+    {
+      "scenario": "14",
+      "actor": "CUS-001",
+      "call": "GET /api/notifications",
+      "status": 200,
+      "note": "notifications",
+      "audit_events": null
+    },
+    {
+      "scenario": "14",
+      "actor": "demo",
+      "call": "POST /api/demo/clock",
+      "status": 200,
+      "note": "demo date: due date",
+      "audit_events": [
+        242,
+        242
+      ]
+    },
+    {
+      "scenario": "14",
+      "actor": "CUS-001",
+      "call": "GET /api/notifications",
+      "status": 200,
+      "note": "notifications",
+      "audit_events": null
+    },
+    {
+      "scenario": "14",
+      "actor": "demo",
+      "call": "POST /api/demo/clock",
+      "status": 200,
+      "note": "demo date: 1 day overdue",
+      "audit_events": [
+        243,
+        247
+      ]
+    },
+    {
+      "scenario": "14",
+      "actor": "CUS-001",
+      "call": "GET /api/loans/LN-261016-0001",
+      "status": 200,
+      "note": "loan detail",
+      "audit_events": null,
+      "result": "loan ACTIVE paid 0/6 outstanding 12000000"
+    },
+    {
+      "scenario": "14",
+      "actor": "CUS-001",
+      "call": "POST /api/loans/LN-261016-0001/repay",
+      "status": 200,
+      "note": "Pay Loan 2 instalments",
+      "audit_events": [
+        248,
+        248
+      ],
+      "result": "loan ACTIVE paid 2/6 outstanding 8000000"
+    },
+    {
+      "scenario": "15",
+      "actor": "CUS-001",
+      "call": "POST /api/qr/resolve",
+      "status": 201,
+      "note": "scan QR-261016-1352",
+      "audit_events": [
+        249,
+        249
+      ]
+    },
+    {
+      "scenario": "15",
+      "actor": "CUS-001",
+      "call": "POST /api/transactions/TXN-261016-0016/terms-and-conditions",
+      "status": 200,
+      "note": "tick T&C checkbox",
+      "audit_events": [
+        250,
+        250
+      ],
+      "result": "CHECKOUT | tx=QR_CREATED | credit=None | readiness=None"
+    },
+    {
+      "scenario": "15",
+      "actor": "CUS-001",
+      "call": "POST /api/transactions/TXN-261016-0016/payment-method",
+      "status": 200,
+      "note": "choose Pay Later",
+      "audit_events": [
+        251,
+        254
+      ],
+      "result": "READY_TO_ASSESS | tx=CONSENT_COMPLETED | credit=ASSESSMENT_PENDING | readiness=None"
+    },
+    {
+      "scenario": "15",
+      "actor": "CUS-001",
+      "call": "POST /api/applications/APP-261016-0011/assess",
+      "status": 200,
+      "note": "assess",
+      "audit_events": [
+        255,
+        260
+      ],
+      "result": "MORE_INFO_REQUIRED | tx=PENDING_REVIEW | credit=MORE_INFORMATION_REQUIRED | readiness=DATA_READY"
+    },
+    {
+      "scenario": "15",
+      "actor": "officer",
+      "call": "GET /api/officer/cases/APP-261016-0011",
+      "status": 200,
+      "note": "officer view",
+      "audit_events": null
+    },
+    {
+      "scenario": "15",
+      "actor": "CUS-001",
+      "call": "POST /api/transactions/TXN-261016-0016/cancel",
+      "status": 200,
+      "note": "cancel",
+      "audit_events": [
+        261,
+        261
+      ],
+      "result": "CANCELLED | tx=CANCELLED | credit=MORE_INFORMATION_REQUIRED | readiness=DATA_READY"
+    },
+    {
+      "scenario": "16",
+      "actor": "CUS-001",
+      "call": "POST /api/qr/resolve",
+      "status": 201,
+      "note": "scan QR-261016-1610",
+      "audit_events": [
+        262,
+        262
+      ]
+    },
+    {
+      "scenario": "16",
+      "actor": "CUS-001",
+      "call": "POST /api/transactions/TXN-261016-0017/terms-and-conditions",
+      "status": 200,
+      "note": "tick T&C checkbox",
+      "audit_events": [
+        263,
+        263
+      ],
+      "result": "CHECKOUT | tx=QR_CREATED | credit=None | readiness=None"
+    },
+    {
+      "scenario": "16",
+      "actor": "CUS-001",
+      "call": "POST /api/transactions/TXN-261016-0017/payment-method",
+      "status": 422,
+      "note": "Pay Later 30M",
+      "audit_events": null,
+      "result": "CREDIT_LIMIT_EXCEEDED"
+    },
+    {
+      "scenario": "16",
+      "actor": "CUS-001",
+      "call": "POST /api/limit-requests",
+      "status": 201,
+      "note": "request increase",
+      "audit_events": [
+        264,
+        264
+      ],
+      "result": "limit request DRAFT"
+    },
+    {
+      "scenario": "16",
+      "actor": "CUS-001",
+      "call": "POST /api/limit-requests/CLR-261016-0001/documents",
+      "status": 200,
+      "note": "upload payslip",
+      "audit_events": [
+        265,
+        265
+      ],
+      "result": "limit request DRAFT"
+    },
+    {
+      "scenario": "16",
+      "actor": "CUS-001",
+      "call": "POST /api/limit-requests/CLR-261016-0001/submit",
+      "status": 200,
+      "note": "submit",
+      "audit_events": [
+        266,
+        267
+      ],
+      "result": "limit request PENDING_REVIEW"
+    },
+    {
+      "scenario": "16",
+      "actor": "officer",
+      "call": "GET /api/officer/limit-requests/CLR-261016-0001",
+      "status": 200,
+      "note": "officer opens",
+      "audit_events": null,
+      "result": "limit request PENDING_REVIEW"
+    },
+    {
+      "scenario": "16",
+      "actor": "officer",
+      "call": "POST /api/officer/limit-requests/CLR-261016-0001/decision",
+      "status": 200,
+      "note": "officer approves limit",
+      "audit_events": [
+        268,
+        269
+      ],
+      "result": "limit request APPROVED"
+    },
+    {
+      "scenario": "16",
+      "actor": "CUS-001",
+      "call": "GET /api/credit",
+      "status": 200,
+      "note": "credit summary",
+      "audit_events": null
+    },
+    {
+      "scenario": "16",
+      "actor": "CUS-001",
+      "call": "POST /api/transactions/TXN-261016-0017/payment-method",
+      "status": 200,
+      "note": "retry Pay Later",
+      "audit_events": [
+        270,
+        273
+      ],
+      "result": "READY_TO_ASSESS | tx=CONSENT_COMPLETED | credit=ASSESSMENT_PENDING | readiness=None"
+    },
+    {
+      "scenario": "16",
+      "actor": "CUS-001",
+      "call": "POST /api/transactions/TXN-261016-0017/cancel",
+      "status": 200,
+      "note": "cancel",
+      "audit_events": [
+        274,
+        274
+      ],
+      "result": "CANCELLED | tx=CANCELLED | credit=ASSESSMENT_PENDING | readiness=None"
+    },
+    {
+      "scenario": "16",
+      "actor": "CUS-007",
+      "call": "POST /api/limit-requests",
+      "status": 201,
+      "note": "request",
+      "audit_events": [
+        275,
+        275
+      ],
+      "result": "limit request DRAFT"
+    },
+    {
+      "scenario": "16",
+      "actor": "CUS-007",
+      "call": "POST /api/limit-requests/CLR-261016-0002/documents",
+      "status": 200,
+      "note": "upload employment",
+      "audit_events": [
+        276,
+        276
+      ],
+      "result": "limit request DRAFT"
+    },
+    {
+      "scenario": "16",
+      "actor": "CUS-007",
+      "call": "POST /api/limit-requests/CLR-261016-0002/submit",
+      "status": 200,
+      "note": "submit",
+      "audit_events": [
+        277,
+        278
+      ],
+      "result": "limit request PENDING_REVIEW"
+    },
+    {
+      "scenario": "16",
+      "actor": "officer",
+      "call": "GET /api/officer/limit-requests/CLR-261016-0002",
+      "status": 200,
+      "note": "officer opens",
+      "audit_events": null,
+      "result": "limit request PENDING_REVIEW"
+    },
+    {
+      "scenario": "16",
+      "actor": "officer",
+      "call": "POST /api/officer/limit-requests/CLR-261016-0002/decision",
+      "status": 200,
+      "note": "officer rejects limit",
+      "audit_events": [
+        279,
+        279
+      ],
+      "result": "limit request REJECTED"
+    },
+    {
+      "scenario": "16",
+      "actor": "CUS-007",
+      "call": "GET /api/credit",
+      "status": 200,
+      "note": "credit summary",
+      "audit_events": null
+    },
+    {
+      "scenario": "17",
+      "actor": "CUS-007",
+      "call": "POST /api/qr/resolve",
+      "status": 201,
+      "note": "scan QR-261016-2230",
+      "audit_events": [
+        280,
+        280
+      ]
+    },
+    {
+      "scenario": "17",
+      "actor": "CUS-007",
+      "call": "POST /api/transactions/TXN-261016-0018/terms-and-conditions",
+      "status": 200,
+      "note": "tick T&C checkbox",
+      "audit_events": [
+        281,
+        281
+      ],
+      "result": "CHECKOUT | tx=QR_CREATED | credit=None | readiness=None"
+    },
+    {
+      "scenario": "17",
+      "actor": "CUS-007",
+      "call": "POST /api/transactions/TXN-261016-0018/payment-method",
+      "status": 200,
+      "note": "choose Pay Later",
+      "audit_events": [
+        282,
+        285
+      ],
+      "result": "READY_TO_ASSESS | tx=CONSENT_COMPLETED | credit=ASSESSMENT_PENDING | readiness=None"
+    },
+    {
+      "scenario": "17",
+      "actor": "CUS-007",
+      "call": "POST /api/applications/APP-261016-0013/assess",
+      "status": 200,
+      "note": "assess",
+      "audit_events": [
+        286,
+        291
+      ],
+      "result": "MORE_INFO_REQUIRED | tx=PENDING_REVIEW | credit=MORE_INFORMATION_REQUIRED | readiness=DATA_READY"
+    },
+    {
+      "scenario": "17",
+      "actor": "CUS-007",
+      "call": "POST /api/transactions/TXN-261016-0018/cancel",
+      "status": 200,
+      "note": "cancel approved-but-unconfirmed",
+      "audit_events": [
+        292,
+        292
+      ],
+      "result": "CANCELLED | tx=CANCELLED | credit=MORE_INFORMATION_REQUIRED | readiness=DATA_READY"
+    },
+    {
+      "scenario": "17",
+      "actor": "CUS-007",
+      "call": "POST /api/applications/APP-261016-0013/terms/confirm",
+      "status": 409,
+      "note": "try confirm after cancel",
+      "audit_events": null,
+      "result": "INVALID_STATE"
+    },
+    {
+      "scenario": "17",
+      "actor": "CUS-007",
+      "call": "POST /api/transactions/TXN-261016-0018/pay",
+      "status": 409,
+      "note": "try pay after cancel",
+      "audit_events": null,
+      "result": "TRANSACTION_CLOSED"
+    },
+    {
+      "scenario": "17",
+      "actor": "CUS-001",
+      "call": "POST /api/qr/resolve",
+      "status": 409,
+      "note": "re-scan paid QR",
+      "audit_events": null,
+      "result": "QR_ALREADY_PAID"
+    },
+    {
+      "scenario": "18",
+      "actor": "CUS-007",
+      "call": "POST /api/qr/resolve",
+      "status": 201,
+      "note": "scan QR-261016-1722",
+      "audit_events": [
+        293,
+        293
+      ]
+    },
+    {
+      "scenario": "18",
+      "actor": "CUS-007",
+      "call": "POST /api/transactions/TXN-261016-0019/terms-and-conditions",
+      "status": 200,
+      "note": "tick T&C checkbox",
+      "audit_events": [
+        294,
+        294
+      ],
+      "result": "CHECKOUT | tx=QR_CREATED | credit=None | readiness=None"
+    },
+    {
+      "scenario": "18",
+      "actor": "CUS-007",
+      "call": "POST /api/transactions/TXN-261016-0019/payment-method",
+      "status": 200,
+      "note": "Pay Now",
+      "audit_events": [
+        295,
+        295
+      ],
+      "result": "CHECKOUT | tx=PAYMENT_METHOD_SELECTED | credit=None | readiness=None"
+    },
+    {
+      "scenario": "18",
+      "actor": "CUS-007",
+      "call": "POST /api/transactions/TXN-261016-0019/pay",
+      "status": 200,
+      "note": "pay",
+      "audit_events": [
+        296,
+        297
+      ],
+      "result": "PAYMENT_COMPLETED | tx=PAYMENT_COMPLETED | credit=None | readiness=None"
+    }
+  ]
+}

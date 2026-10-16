@@ -1,0 +1,599 @@
+{
+  "note": "FICTIONAL demo data. Names, accounts, merchants and QR codes are invented. Applicant financial fields are copied from the supplied dataset rows named in derived_from (pre-assessment columns only); any adjustment is stated in fixture_adjustment.",
+  "demo_date": "2026-10-16",
+  "customers": [
+    {
+      "customer_id": "CUS-001",
+      "display_name": "Ta My Kim Tien",
+      "initials": "TT",
+      "account_masked": "•••• 4821",
+      "balance_vnd": 24850000,
+      "indicative_limit_vnd": 18000000,
+      "derived_from": "HLB_POP_100000005",
+      "fixture_adjustment": null,
+      "persona_note": "Salaried, formal CIC history, verified transactions. Expected: STP approval for purchases within the indicative limit.",
+      "applicant": {
+        "customer_profile": "Salaried, with credit history",
+        "has_formal_cic_history": 1,
+        "has_observable_tx": 1,
+        "monthly_inflow_vnd": 16969073,
+        "inflow_cv": 0.0681,
+        "unified_credit_score": 681,
+        "casa_balance_vnd": 7096492,
+        "dti_ratio": 0.3145,
+        "on_time_bill_ratio": 0.9715,
+        "e_wallet_topups_pm": 6,
+        "regular_weekly_pattern": 1,
+        "rapid_drain_flag": 0
+      },
+      "sources": {
+        "hlb_transactions": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "period_months": 6,
+          "method": "SIMULATED_CORE_EXTRACT"
+        },
+        "credit_information": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "method": "SIMULATED_BUREAU_RECORD"
+        },
+        "e_wallet_activity": {
+          "verified": true,
+          "observed_at": "2026-10-14",
+          "method": "SIMULATED_PARTNER_FEED"
+        }
+      }
+    },
+    {
+      "customer_id": "CUS-002",
+      "display_name": "Huynh Gia Bao",
+      "initials": "HB",
+      "account_masked": "•••• 1170",
+      "balance_vnd": 6200000,
+      "indicative_limit_vnd": 10000000,
+      "derived_from": "HLB_POP_100000020",
+      "fixture_adjustment": null,
+      "persona_note": "Gig worker, no formal CIC history, weak profile (score 423 < 436, on-time bills 0.59 < 0.663). Expected: supporting documents requested, then credit-officer review. Never auto-declined.",
+      "applicant": {
+        "customer_profile": "Gig / platform workers",
+        "has_formal_cic_history": 0,
+        "has_observable_tx": 1,
+        "monthly_inflow_vnd": 14621915,
+        "inflow_cv": 0.5842,
+        "unified_credit_score": 423,
+        "casa_balance_vnd": 1697966,
+        "dti_ratio": 0.2601,
+        "on_time_bill_ratio": 0.5873,
+        "e_wallet_topups_pm": 16,
+        "regular_weekly_pattern": 0,
+        "rapid_drain_flag": 0
+      },
+      "sources": {
+        "hlb_transactions": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "period_months": 6,
+          "method": "SIMULATED_CORE_EXTRACT"
+        },
+        "credit_information": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "method": "SIMULATED_BUREAU_RECORD",
+          "note": "Bureau checked - no formal history found"
+        },
+        "e_wallet_activity": {
+          "verified": true,
+          "observed_at": "2026-10-14",
+          "method": "SIMULATED_PARTNER_FEED"
+        }
+      }
+    },
+    {
+      "customer_id": "CUS-003",
+      "display_name": "Pham Thi Lan",
+      "initials": "PL",
+      "account_masked": "•••• 3092",
+      "balance_vnd": 15400000,
+      "indicative_limit_vnd": 15000000,
+      "derived_from": "HLB_POP_100000007",
+      "fixture_adjustment": null,
+      "persona_note": "has_observable_tx = 0 while transaction fields are populated (one of 1,943 such dataset rows). Expected: VERIFY_DATA -> human review.",
+      "applicant": {
+        "customer_profile": "Salaried, no credit history",
+        "has_formal_cic_history": 0,
+        "has_observable_tx": 0,
+        "monthly_inflow_vnd": 11113705,
+        "inflow_cv": 0.1476,
+        "unified_credit_score": 539,
+        "casa_balance_vnd": 10094504,
+        "dti_ratio": 0.3171,
+        "on_time_bill_ratio": 0.9431,
+        "e_wallet_topups_pm": 6,
+        "regular_weekly_pattern": 1,
+        "rapid_drain_flag": 0
+      },
+      "sources": {
+        "hlb_transactions": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "period_months": 6,
+          "method": "SIMULATED_CORE_EXTRACT"
+        },
+        "credit_information": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "method": "SIMULATED_BUREAU_RECORD"
+        },
+        "e_wallet_activity": {
+          "verified": true,
+          "observed_at": "2026-10-14",
+          "method": "SIMULATED_PARTNER_FEED"
+        }
+      }
+    },
+    {
+      "customer_id": "CUS-004",
+      "display_name": "Vo Minh Khoa",
+      "initials": "VK",
+      "account_masked": "•••• 5528",
+      "balance_vnd": 11800000,
+      "indicative_limit_vnd": 20000000,
+      "derived_from": "HLB_POP_100000023",
+      "fixture_adjustment": null,
+      "persona_note": "rapid_drain_flag = 1 (one of 266 dataset rows). Expected: human review, never an automatic decline.",
+      "applicant": {
+        "customer_profile": "Salaried, with credit history",
+        "has_formal_cic_history": 1,
+        "has_observable_tx": 1,
+        "monthly_inflow_vnd": 18161654,
+        "inflow_cv": 0.088,
+        "unified_credit_score": 615,
+        "casa_balance_vnd": 11776164,
+        "dti_ratio": 0.2236,
+        "on_time_bill_ratio": 0.8869,
+        "e_wallet_topups_pm": 5,
+        "regular_weekly_pattern": 1,
+        "rapid_drain_flag": 1
+      },
+      "sources": {
+        "hlb_transactions": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "period_months": 6,
+          "method": "SIMULATED_CORE_EXTRACT"
+        },
+        "credit_information": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "method": "SIMULATED_BUREAU_RECORD"
+        },
+        "e_wallet_activity": {
+          "verified": true,
+          "observed_at": "2026-10-14",
+          "method": "SIMULATED_PARTNER_FEED"
+        }
+      }
+    },
+    {
+      "customer_id": "CUS-005",
+      "display_name": "Dang Thu Ha",
+      "initials": "DH",
+      "account_masked": "•••• 7731",
+      "balance_vnd": 5400000,
+      "indicative_limit_vnd": 10000000,
+      "derived_from": "HLB_POP_100000010",
+      "fixture_adjustment": "Transaction-dependent fields removed to model a thin-file applicant whose account exists but has no observable transaction history.",
+      "persona_note": "Thin file: no CIC history and no observable transactions. Expected: INSUFFICIENT_EVIDENCE -> contextual third-party (e-wallet) consent pop-up, or documents, or manual review.",
+      "applicant": {
+        "customer_profile": "Salaried, no credit history",
+        "has_formal_cic_history": 0,
+        "has_observable_tx": 0,
+        "monthly_inflow_vnd": null,
+        "inflow_cv": null,
+        "unified_credit_score": 514,
+        "casa_balance_vnd": null,
+        "dti_ratio": 0.3052,
+        "on_time_bill_ratio": null,
+        "e_wallet_topups_pm": null,
+        "regular_weekly_pattern": null,
+        "rapid_drain_flag": 0
+      },
+      "sources": {
+        "hlb_transactions": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "period_months": 6,
+          "method": "SIMULATED_CORE_EXTRACT"
+        },
+        "credit_information": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "method": "SIMULATED_BUREAU_RECORD"
+        }
+      },
+      "third_party": {
+        "e_wallet_activity": {
+          "applicant": {
+            "e_wallet_topups_pm": 12
+          },
+          "source": {
+            "verified": true,
+            "observed_at": "2026-10-15",
+            "period_months": 6,
+            "method": "SIMULATED_PARTNER_API (consent required)"
+          }
+        }
+      }
+    },
+    {
+      "customer_id": "CUS-006",
+      "display_name": "Le Hoang Nam",
+      "initials": "LN",
+      "account_masked": "•••• 6604",
+      "balance_vnd": 9100000,
+      "indicative_limit_vnd": 12000000,
+      "derived_from": "HLB_POP_100000035",
+      "fixture_adjustment": "customer_profile removed to model a missing mandatory field.",
+      "persona_note": "Mandatory profile information missing. Expected: INCOMPLETE -> customer is asked for the missing detail, then re-assessed.",
+      "applicant": {
+        "customer_profile": null,
+        "has_formal_cic_history": 0,
+        "has_observable_tx": 1,
+        "monthly_inflow_vnd": 25801158,
+        "inflow_cv": 0.296,
+        "unified_credit_score": 624,
+        "casa_balance_vnd": 23890219,
+        "dti_ratio": 0.3269,
+        "on_time_bill_ratio": 0.8302,
+        "e_wallet_topups_pm": 14,
+        "regular_weekly_pattern": 0,
+        "rapid_drain_flag": 0
+      },
+      "sources": {
+        "hlb_transactions": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "period_months": 6,
+          "method": "SIMULATED_CORE_EXTRACT"
+        },
+        "credit_information": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "method": "SIMULATED_BUREAU_RECORD"
+        },
+        "e_wallet_activity": {
+          "verified": true,
+          "observed_at": "2026-10-14",
+          "method": "SIMULATED_PARTNER_FEED"
+        }
+      }
+    },
+    {
+      "customer_id": "CUS-007",
+      "display_name": "Nguyen Thanh Truc",
+      "initials": "NT",
+      "account_masked": "•••• 2458",
+      "balance_vnd": 8700000,
+      "indicative_limit_vnd": 10000000,
+      "derived_from": "HLB_POP_100000070",
+      "fixture_adjustment": null,
+      "persona_note": "Gig worker with NO formal CIC history but a sufficient verified profile. Expected: approved automatically, no documents requested; missing CIC is never a rejection reason.",
+      "applicant": {
+        "customer_profile": "Gig / platform workers",
+        "has_formal_cic_history": 0,
+        "has_observable_tx": 1,
+        "monthly_inflow_vnd": 12998865,
+        "inflow_cv": 0.4812,
+        "unified_credit_score": 462,
+        "casa_balance_vnd": 3271824,
+        "dti_ratio": 0.2337,
+        "on_time_bill_ratio": 0.8339,
+        "e_wallet_topups_pm": 11,
+        "regular_weekly_pattern": 1,
+        "rapid_drain_flag": 0
+      },
+      "sources": {
+        "hlb_transactions": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "period_months": 6,
+          "method": "SIMULATED_CORE_EXTRACT"
+        },
+        "credit_information": {
+          "verified": true,
+          "observed_at": "2026-10-15",
+          "method": "SIMULATED_BUREAU_RECORD",
+          "note": "No formal history found"
+        }
+      }
+    }
+  ],
+  "merchants": [
+    {
+      "merchant_id": "M-ABC",
+      "name": "ABC Electronics",
+      "category": "Consumer electronics",
+      "city": "District 1, HCMC",
+      "pay_later_eligible": true,
+      "icon": "📱"
+    },
+    {
+      "merchant_id": "M-NKA",
+      "name": "Nguyen Kim Appliances",
+      "category": "Home appliances",
+      "city": "District 10, HCMC",
+      "pay_later_eligible": true,
+      "icon": "🧺"
+    },
+    {
+      "merchant_id": "M-MKM",
+      "name": "Mekong Motorbikes",
+      "category": "Vehicles",
+      "city": "Thu Duc, HCMC",
+      "pay_later_eligible": true,
+      "icon": "🛵"
+    },
+    {
+      "merchant_id": "M-FPL",
+      "name": "Saigon Skills Academy",
+      "category": "Education",
+      "city": "District 3, HCMC",
+      "pay_later_eligible": true,
+      "icon": "🎓"
+    },
+    {
+      "merchant_id": "M-SHF",
+      "name": "Saigon Home Furniture",
+      "category": "Furniture",
+      "city": "District 7, HCMC",
+      "pay_later_eligible": true,
+      "icon": "🛋️"
+    },
+    {
+      "merchant_id": "M-VTU",
+      "name": "VinaTopUp Vouchers",
+      "category": "Cash-equivalent / e-wallet top-up",
+      "city": "Online",
+      "pay_later_eligible": false,
+      "icon": "🎟️"
+    },
+    {
+      "merchant_id": "M-BHB",
+      "name": "Bach Hoa Books",
+      "category": "Books & stationery",
+      "city": "District 5, HCMC",
+      "pay_later_eligible": true,
+      "icon": "📚"
+    },
+    {
+      "merchant_id": "M-ANC",
+      "name": "An Nhien Cafe",
+      "category": "Food & beverage",
+      "city": "District 1, HCMC",
+      "pay_later_eligible": true,
+      "icon": "☕"
+    }
+  ],
+  "qr_codes": [
+    {
+      "qr_ref": "QR-261016-0842",
+      "merchant_id": "M-ABC",
+      "amount_vnd": 12000000,
+      "description": "Smartphone, 256GB (demo order #A-0842)",
+      "simulated_failures": 0
+    },
+    {
+      "qr_ref": "QR-261016-0915",
+      "merchant_id": "M-ABC",
+      "amount_vnd": 6400000,
+      "description": "Laptop accessories bundle (demo order #A-0915)",
+      "simulated_failures": 0
+    },
+    {
+      "qr_ref": "QR-261016-1021",
+      "merchant_id": "M-NKA",
+      "amount_vnd": 9900000,
+      "description": "Front-load washing machine (demo order #N-1021)",
+      "simulated_failures": 0
+    },
+    {
+      "qr_ref": "QR-261016-1133",
+      "merchant_id": "M-MKM",
+      "amount_vnd": 15000000,
+      "description": "Scooter down-payment (demo order #MK-1133)",
+      "simulated_failures": 0
+    },
+    {
+      "qr_ref": "QR-261016-1240",
+      "merchant_id": "M-FPL",
+      "amount_vnd": 7200000,
+      "description": "Data analytics course (demo order #S-1240)",
+      "simulated_failures": 0
+    },
+    {
+      "qr_ref": "QR-261016-1352",
+      "merchant_id": "M-SHF",
+      "amount_vnd": 8500000,
+      "description": "3-seat sofa (demo order #F-1352)",
+      "simulated_failures": 1
+    },
+    {
+      "qr_ref": "QR-261016-1418",
+      "merchant_id": "M-VTU",
+      "amount_vnd": 5000000,
+      "description": "Prepaid e-voucher bundle (demo order #V-1418)",
+      "simulated_failures": 0
+    },
+    {
+      "qr_ref": "QR-261016-1505",
+      "merchant_id": "M-BHB",
+      "amount_vnd": 2300000,
+      "description": "Textbook set (demo order #B-1505)",
+      "simulated_failures": 0
+    },
+    {
+      "qr_ref": "QR-261016-1610",
+      "merchant_id": "M-MKM",
+      "amount_vnd": 30000000,
+      "description": "Electric scooter (demo order #MK-1610)",
+      "simulated_failures": 0
+    },
+    {
+      "qr_ref": "QR-261016-1722",
+      "merchant_id": "M-ANC",
+      "amount_vnd": 125000,
+      "description": "2 x iced coffee (demo order #C-1722)",
+      "simulated_failures": 0
+    },
+    {
+      "qr_ref": "QR-261016-1830",
+      "merchant_id": "M-ANC",
+      "amount_vnd": 980000,
+      "description": "Catering voucher (demo order #C-1830)",
+      "simulated_failures": 0
+    },
+    {
+      "qr_ref": "QR-261016-1915",
+      "merchant_id": "M-SHF",
+      "amount_vnd": 95000000,
+      "description": "Full living-room set (demo order #F-1915)",
+      "simulated_failures": 0
+    },
+    {
+      "qr_ref": "QR-261016-2004",
+      "merchant_id": "M-NKA",
+      "amount_vnd": 4500000,
+      "description": "Air purifier (demo order #N-2004)",
+      "simulated_failures": 0
+    },
+    {
+      "qr_ref": "QR-261016-2110",
+      "merchant_id": "M-BHB",
+      "amount_vnd": 3100000,
+      "description": "Stationery bundle (demo order #B-2110)",
+      "simulated_failures": 0
+    },
+    {
+      "qr_ref": "QR-261016-2230",
+      "merchant_id": "M-ABC",
+      "amount_vnd": 3500000,
+      "description": "Wireless earbuds (demo order #A-2230)",
+      "simulated_failures": 0
+    }
+  ],
+  "scenarios": [
+    {
+      "id": 1,
+      "title": "Auto-approval (STP) and payment",
+      "customer_id": "CUS-001",
+      "qr_ref": "QR-261016-0842",
+      "expect": "T&C -> Pay Later -> DATA_READY -> STP_ELIGIBLE -> APPROVED -> confirm -> PAYMENT_COMPLETED -> loan in My Loans"
+    },
+    {
+      "id": 2,
+      "title": "Mandatory T&C checkbox",
+      "customer_id": "CUS-001",
+      "qr_ref": "QR-261016-2004",
+      "expect": "Pay Now / Pay Later stay locked until the single T&C box is ticked (server rejects method selection without it)"
+    },
+    {
+      "id": 3,
+      "title": "Amount below / above Pay Later range",
+      "customer_id": "CUS-001",
+      "qr_ref": "QR-261016-1830",
+      "expect": "980K and 95M are blocked from Pay Later with an explanation; Pay Now still possible"
+    },
+    {
+      "id": 4,
+      "title": "Sufficient profile, no CIC, no documents",
+      "customer_id": "CUS-007",
+      "qr_ref": "QR-261016-1505",
+      "expect": "No CIC history but verified profile -> APPROVED without document request"
+    },
+    {
+      "id": 5,
+      "title": "Poor profile -> supporting documents",
+      "customer_id": "CUS-002",
+      "qr_ref": "QR-261016-0915",
+      "expect": "RF-02/RF-03 -> documents requested -> upload -> MANUAL_REVIEW (no auto-approval)"
+    },
+    {
+      "id": 6,
+      "title": "Missing information -> resume",
+      "customer_id": "CUS-006",
+      "qr_ref": "QR-261016-2110",
+      "expect": "INCOMPLETE -> provide profile -> re-assessed -> APPROVED"
+    },
+    {
+      "id": 7,
+      "title": "Third-party consent (thin file)",
+      "customer_id": "CUS-005",
+      "qr_ref": "QR-261016-1240",
+      "expect": "INSUFFICIENT_EVIDENCE -> contextual e-wallet consent pop-up -> allow -> EV-3P -> APPROVED; decline -> documents or manual review"
+    },
+    {
+      "id": 8,
+      "title": "Rapid drain -> documents -> officer rejects",
+      "customer_id": "CUS-004",
+      "qr_ref": "QR-261016-1133",
+      "expect": "R-REV-01 -> documents -> MANUAL_REVIEW -> officer reject -> CANCELLED, no disbursement"
+    },
+    {
+      "id": 9,
+      "title": "Data conflict -> officer requests more -> approves",
+      "customer_id": "CUS-003",
+      "qr_ref": "QR-261016-1021",
+      "expect": "VERIFY_DATA -> officer requests bank statement -> upload -> officer approves -> confirm -> paid"
+    },
+    {
+      "id": 10,
+      "title": "Policy stop (ineligible merchant)",
+      "customer_id": "CUS-001",
+      "qr_ref": "QR-261016-1418",
+      "expect": "HS-02 -> POLICY_STOP, no payment"
+    },
+    {
+      "id": 11,
+      "title": "Payment failure then retry",
+      "customer_id": "CUS-001",
+      "qr_ref": "QR-261016-1352",
+      "expect": "APPROVED; first attempt fails (credit stays APPROVED); retry succeeds"
+    },
+    {
+      "id": 12,
+      "title": "Credit limit exceeded -> limit increase",
+      "customer_id": "CUS-001",
+      "qr_ref": "QR-261016-1610",
+      "expect": "30M > available credit -> request limit increase with documents -> officer approves/rejects"
+    },
+    {
+      "id": 13,
+      "title": "Checkout timer, cancel and expiry",
+      "customer_id": "CUS-001",
+      "qr_ref": "QR-261016-2230",
+      "expect": "5-minute countdown; cancel any time; expiry -> EXPIRED, cannot be approved or paid"
+    },
+    {
+      "id": 14,
+      "title": "Pay Loan, reminders and overdue",
+      "customer_id": "CUS-001",
+      "qr_ref": "QR-261016-0842",
+      "expect": "After scenario 1: advance demo date -> reminder, due, overdue (no late fee configured) -> Pay Loan -> balance and progress update"
+    },
+    {
+      "id": 15,
+      "title": "Duplicate QR / payment protection",
+      "customer_id": "CUS-001",
+      "qr_ref": "QR-261016-0842",
+      "expect": "Re-scanning a paid QR -> already paid; repeated pay requests idempotent"
+    },
+    {
+      "id": 16,
+      "title": "Pay Now from account",
+      "customer_id": "CUS-001",
+      "qr_ref": "QR-261016-1722",
+      "expect": "Pay Now -> account debit -> PAYMENT_COMPLETED"
+    }
+  ]
+}

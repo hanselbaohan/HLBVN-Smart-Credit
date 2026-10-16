@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HLB Connect Smart Credit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="/img/hlb-app-icon.png">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <div class="stage">
+    <div class="phone" id="phone">
+      <div class="demo-strip"><b>Demo · Fictional data</b> &nbsp;|&nbsp; Proposed concept</div>
+      <main class="screen" id="screen" aria-live="polite"></main>
+      <nav class="tabbar" id="tabbar" aria-label="Main">
+        <a href="#/home" data-tab="home"><span class="ico">⌂</span>Home</a>
+        <a href="#/payments" data-tab="payments"><span class="ico">⇄</span>Payments</a>
+        <a href="#/smart-credit" data-tab="smart-credit"><span class="ico">✓</span>Smart Credit</a>
+        <a href="#/activity" data-tab="activity"><span class="ico">≡</span>Activity</a>
+        <a href="#/profile" data-tab="profile"><span class="ico">◯</span>Profile</a>
+      </nav>
+    </div>
+    <aside class="side-panel">
+      <div class="box">
+        <h3>HLB Connect Smart Credit · MVP</h3>
+        QR → T&amp;C → Pay Now / Pay Later → rule-based credit check → STP, documents or officer review → terms → simulated payment → My Loans.
+        All data is fictional; QR scanning, credit checks, uploads, officer review, payments and repayments are <b>simulated</b>. Not a production AI model.
+      </div>
+      <div class="box">
+        <h3>Credit officer</h3>
+        Open the <a href="/officer.html" target="_blank" rel="noopener">officer workbench</a> in another tab to review,
+        approve, reject or request information. This screen updates automatically.
+      </div>
+      <div class="box" id="side-scenarios"><h3>Demo scenarios</h3>Loading…</div>
+    </aside>
+  </div>
+  <script src="/js/api.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
